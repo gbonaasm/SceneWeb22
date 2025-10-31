@@ -1,65 +1,30 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-import cloudinary from "cloudinary";
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const path = require("path");
 
-// 🧠 Path setup (karena ES Module)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Load .env
+dotenv.config();
 
-// 📦 Load .env dari folder ini
-dotenv.config({ path: path.join(__dirname, ".env") });
-
-// 🛠 Debug: cek apakah env terbaca
-console.log("🔍 Loaded ENV:");
-console.log({
-  PORT: process.env.PORT,
-  MONGO_URI: process.env.MONGO_URI ? "✅ Loaded" : "❌ Missing",
-  CLOUDINARY: process.env.CLOUDINARY_CLOUD_NAME ? "✅ Loaded" : "❌ Missing",
-});
-
-import filmRoutes from "./api/routes/filmRoutes.js";
-import userRoutes from "./api/routes/userRoutes.js";
-import authRoutes from "./api/routes/authRoutes.js";
-
-// 🚀 Express setup
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// ☁️ Cloudinary setup
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// 🧩 MongoDB connection
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB error:", err.message));
-
-// 🧭 Routes
+// Default route to verify deployment
 app.get("/", (req, res) => {
-  res.send("🎬 SceneWeb API is running...");
+  res.status(200).send("✅ SceneWeb22 API is running on Railway!");
 });
 
+// Example route (optional)
+const filmRoutes = require("./routes/filmRoutes");
 app.use("/api/films", filmRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/auth", authRoutes);
 
-// 🧱 Handle unknown routes
-app.use((req, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
-
-// 🚀 Start server
+// Railway-provided PORT
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+// Listen on 0.0.0.0 so Railway can detect it
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
