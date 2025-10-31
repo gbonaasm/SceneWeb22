@@ -1,30 +1,29 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const path = require("path");
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+import router from "./routes/index.js"; // pastikan ada file index.js di routes
 
-// Load .env
 dotenv.config();
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Default route to verify deployment
+// Routes utama
+app.use("/api", router);
+
+// Untuk cek server
 app.get("/", (req, res) => {
-  res.status(200).send("✅ SceneWeb22 API is running on Railway!");
+  res.send("🚀 API is running successfully!");
 });
 
-// Example route (optional)
-const filmRoutes = require("./routes/filmRoutes");
-app.use("/api/films", filmRoutes);
-
-// Railway-provided PORT
-const PORT = process.env.PORT || 3000;
-
-// Listen on 0.0.0.0 so Railway can detect it
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+// Jalankan server
+app.listen(port, () => {
+  console.log(`✅ Server running on port ${port}`);
 });
