@@ -21,9 +21,9 @@ console.log({
   CLOUDINARY: process.env.CLOUDINARY_CLOUD_NAME ? "✅ Loaded" : "❌ Missing",
 });
 
-import filmRoutes from "./routes/filmRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
+import filmRoutes from "./api/routes/filmRoutes.js";
+import userRoutes from "./api/routes/userRoutes.js";
+import authRoutes from "./api/routes/authRoutes.js";
 
 // 🚀 Express setup
 const app = express();
